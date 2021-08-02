@@ -5,7 +5,7 @@ description = "A collection of utility functions for text processing and file ha
 authors = ["Linda Moreau"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.6.1,<4.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
