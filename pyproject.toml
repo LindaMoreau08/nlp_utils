@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "nlp_utils"
+version = "0.1.0"
+description = "A collection of utility functions for text processing and file handling"
+authors = ["Linda Moreau"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
