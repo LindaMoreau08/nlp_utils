@@ -8,7 +8,7 @@ from typing import Dict, List, Tuple
 import unicodedata
 
 
-def load_list(file_name, delim='\n', trim_elements=True) -> List[str]:
+def load_list_single_col(file_name, delim='\n', trim_elements=True) -> List[str]:
     """
     load a list from a file
     :param file_name: valid path to a file containing list items
@@ -36,12 +36,61 @@ def load_list(file_name, delim='\n', trim_elements=True) -> List[str]:
     return the_list
 
 
-def load_dict(file_name, delim='|',
+# def load_list_from_csv(file_name,
+#               delim='|',
+#               norm_keys: bool = True,
+#               norm_values: bool = True,
+#               val_col: int = 1,
+#               return_errors = False,
+#               max_errs: int = 5) :
+#     """
+#     load a dict from a file
+#     :param file_name: valid path to a file containing list items
+#     :param delim: a list delimiter.  Default is '|', the pipe character
+#     :param norm_keys: bool indicating whether to unicode normalize and lowercase keys in the returned dictionary
+#     :param norm_values: bool indicating whether to unicode normalize values in the returned dictionary
+#     :param val_col:  int indicating the column in which to find dictionary values, 1 is the first column number
+#     :param return_errors: bool indicating whether to return errors
+#     :param max_errs: int
+#     :return: a list
+#     """
+#     # TODO: finish and test this function
+#     the_list = []
+#     errors = []
+#     if val_col < 1:
+#         errors.append(f"{0}|invalid column for key_col: {key_col}")
+#      if errors:
+#         return the_dict, errors
+#     val_col = val_col - 1
+#     with open(file_name, "r", encoding="utf-8") as csv_file:
+#         csv_reader = csv.reader(csv_file, delimiter=delim)
+#         line_num = 0
+#         for cur_line in csv_reader:
+#             line_num += 1
+#             line_len = len(cur_line)
+#             if len(errors) >= max_errs:
+#                 break
+#             if val_col >= line_len:
+#                 errors.append(f"{line_num}|value column index {val_col} out of bounds for row len: {line_len}")
+#                 continue
+#             the_val = cur_line[val_col].strip()
+#             if norm_values:
+#                 the_val = unicodedata.normalize('NFKD', the_val)
+#             the_list.append(the_val)
+#     if return_errors:
+#         return the_list, errors
+#     return the_list
+
+
+
+def load_dict(file_name,
+              delim='|',
               norm_keys: bool = True,
               norm_values: bool = True,
               key_col: int = 1,
               val_col: int = 2,
-              max_errs: int = 5) -> Tuple[Dict, List[str]]:
+              return_errors: bool = False,
+              max_errs: int = 5):
     """
     load a dict from a file
     :param file_name: valid path to a file containing list items
@@ -50,6 +99,7 @@ def load_dict(file_name, delim='|',
     :param norm_values: bool indicating whether to unicode normalize values in the returned dictionary
     :param key_col:  int indicating the column in which to find dictionary keys, 1 is the first column number
     :param val_col:  int indicating the column in which to find dictionary values, 1 is the first column number
+    :param return_errors: bool indicating whether to return a list of errors
     :param max_errs: int
     :return: a list
     """
@@ -86,13 +136,13 @@ def load_dict(file_name, delim='|',
                 the_val = unicodedata.normalize('NFKD', the_val)
             if the_key not in the_dict.keys():
                 the_dict[the_key] = the_val
-    return the_dict, errors
+    if return_errors:
+        return the_dict, errors
+    return the_dict
 
-
-#  TODO: do a better job at dictionary loading, merge this method with the load_dict method of this file
 
 def load_dictionary(lang_dir, dictionary_file, has_header=True):
-
+    #  TODO: do a better job at dictionary loading, merge this method with the load_dict method of this file
     if not os.path.isfile(dictionary_file):
         dictionary_rsc = os.path.join(pathlib.Path(__file__).parent, '', 'data', lang_dir, dictionary_file)
         if not os.path.isfile(dictionary_rsc):
@@ -128,7 +178,8 @@ def load_dict_from_csv(file_name,
                        norm_values: bool = True,
                        key_col: int = 1,
                        val_col: int = 2,
-                       max_errs: int = -1) -> Tuple[dict, List[str]]:
+                       return_errors: bool = False,
+                       max_errs: int = -1):
     """
     load a dict from a file
     :param file_name: valid path to a file containing the dict entries
@@ -175,7 +226,9 @@ def load_dict_from_csv(file_name,
                 the_dict[the_key] = the_val
             if max_errs != -1 and len(errors) >= max_errs:
                 break
-    return the_dict, errors
+    if return_errors:
+        return the_dict, errors
+    return the_dict
 
 
 # TODO: add error checking to get_project_root
